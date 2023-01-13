@@ -14,6 +14,7 @@ static char* titletrim    = "...";
 static int tabwidth       = 200;
 static int focusnew       = 1;
 static int urgentswitch   = 0;
+static int separator      = 4;
 
 /*
  * Where to place a new tab when it is opened. When npisrelative is True,
@@ -52,6 +53,7 @@ ResourcePref resources[] = {
 	{ "urgentswitch", INTEGER, &urgentswitch},
 	{ "newposition",  INTEGER, &newposition},
 	{ "npisrelative", INTEGER, &npisrelative},
+	{ "separator",    INTEGER, &separator},
 };
 
 #define MODKEY ControlMask
