@@ -261,6 +261,7 @@ buttonpress(const XEvent *e)
 				focus(i);
 				break;
 			case Button2:
+			case Button3:
 				focus(i);
 				killclient(NULL);
 				break;
