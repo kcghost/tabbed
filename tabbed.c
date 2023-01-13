@@ -445,7 +445,6 @@ drawbar(void)
 		dc.w = width / cc;
 		if (c == sel) {
 			col = dc.sel;
-			dc.w += width % cc;
 		} else {
 			col = clients[c]->urgent ? dc.urg : dc.norm;
 		}
