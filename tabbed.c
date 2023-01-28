@@ -88,6 +88,7 @@ typedef struct {
 
 /* function declarations */
 static void buttonpress(const XEvent *e);
+static void motionnotify(const XEvent *e);
 static void cleanup(void);
 static void clientmessage(const XEvent *e);
 static void configurenotify(const XEvent *e);
@@ -151,6 +152,7 @@ static void (*handler[LASTEvent]) (const XEvent *) = {
 	[KeyPress] = keypress,
 	[MapRequest] = maprequest,
 	[PropertyNotify] = propertynotify,
+	[MotionNotify] = motionnotify,
 };
 static int bh, obh, wx, wy, ww, wh;
 static unsigned int numlockmask;
@@ -203,6 +205,41 @@ buttonpress(const XEvent *e)
 				arg.i = ev->button == Button4 ? -1 : 1;
 				rotate(&arg);
 				break;
+			}
+			break;
+		}
+	}
+}
+
+void
+motionnotify(const XEvent *e)
+{
+	const XMotionEvent *ev = &e->xmotion;
+	int i, fc;
+	Arg arg;
+
+	if (ev->y < 0 || ev->y > bh)
+		return;
+
+	if (! (ev->state & Button1Mask)) {
+		return;
+	}
+
+	if (((fc = getfirsttab()) > 0 && ev->x < TEXTW(before)) || ev->x < 0)
+		return;
+
+	if (sel < 0)
+		return;
+
+	for (i = fc; i < nclients; i++) {
+		if (clients[i]->tabx > ev->x) {
+			if (i == sel+1) {
+				arg.i = 1;
+				movetab(&arg);
+			}
+			if (i == sel-1) {
+				arg.i = -1;
+				movetab(&arg);
 			}
 			break;
 		}
@@ -1046,7 +1083,7 @@ setup(void)
 	XSelectInput(dpy, win, SubstructureNotifyMask | FocusChangeMask |
 	             ButtonPressMask | ExposureMask | KeyPressMask |
 	             PropertyChangeMask | StructureNotifyMask |
-	             SubstructureRedirectMask);
+	             SubstructureRedirectMask | ButtonMotionMask);
 	xerrorxlib = XSetErrorHandler(xerror);
 
 	class_hint.res_name = wmname;
