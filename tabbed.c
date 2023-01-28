@@ -86,6 +86,7 @@ typedef struct {
 	int tabx;
 	Bool urgent;
 	Bool closed;
+	pid_t pid;
 } Client;
  
 /* Xresources preferences */
@@ -187,6 +188,7 @@ static int cmd_append_pos;
 static char winid[64];
 static char **cmd;
 static char *wmname = "tabbed";
+static pid_t nextpid;
 static const char *geometry;
 static unsigned long icon[ICON_WIDTH * ICON_HEIGHT + 2];
 
@@ -765,6 +767,7 @@ manage(Window w)
 
 		c = ecalloc(1, sizeof *c);
 		c->win = w;
+		c->pid = nextpid;
 
 		nclients++;
 		clients = erealloc(clients, sizeof(Client *) * nclients);
@@ -1180,7 +1183,8 @@ sigchld(int unused)
 void
 spawn(const Arg *arg)
 {
-	if (fork() == 0) {
+	pid_t pid = fork();
+	if (pid == 0) {
 		if(dpy)
 			close(ConnectionNumber(dpy));
 
@@ -1196,6 +1200,8 @@ spawn(const Arg *arg)
 		}
 		perror(" failed");
 		exit(0);
+	} else {
+		nextpid = pid;
 	}
 }
 
