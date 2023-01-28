@@ -777,7 +777,7 @@ manage(Window w)
 		focus(nextfocus ? nextpos :
 		      sel < 0 ? 0 :
 		      sel);
-		nextfocus = foreground;
+		nextfocus = focusnew;
 	}
 }
 
@@ -1096,7 +1096,7 @@ setup(void)
 		    ICON_PIXEL_DATA[i * 4 + 2] << 16 ;
 	}
 
-	nextfocus = foreground;
+	nextfocus = focusnew;
 	focus(-1);
 }
 

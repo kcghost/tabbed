@@ -12,7 +12,7 @@ static const char before[]      = "<";
 static const char after[]       = ">";
 static const char titletrim[]   = "...";
 static const int  tabwidth      = 200;
-static const Bool foreground    = True;
+static const Bool focusnew      = True;
 static       Bool urgentswitch  = False;
 
 /*
