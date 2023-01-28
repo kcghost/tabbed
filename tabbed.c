@@ -237,10 +237,8 @@ cleanup(void)
 	int i;
 
 	for (i = 0; i < nclients; i++) {
-		focus(i);
-		killclient(NULL);
-		XReparentWindow(dpy, clients[i]->win, root, 0, 0);
-		unmanage(i);
+		kill(clients[i]->pid, SIGTERM);
+		free(clients[i]);
 	}
 	free(clients);
 	clients = NULL;
@@ -718,23 +716,10 @@ keypress(const XEvent *e)
 void
 killclient(const Arg *arg)
 {
-	XEvent ev;
-
 	if (sel < 0)
 		return;
 
-	if (isprotodel(sel) && !clients[sel]->closed) {
-		ev.type = ClientMessage;
-		ev.xclient.window = clients[sel]->win;
-		ev.xclient.message_type = wmatom[WMProtocols];
-		ev.xclient.format = 32;
-		ev.xclient.data.l[0] = wmatom[WMDelete];
-		ev.xclient.data.l[1] = CurrentTime;
-		XSendEvent(dpy, clients[sel]->win, False, NoEventMask, &ev);
-		clients[sel]->closed = True;
-	} else {
-		XKillClient(dpy, clients[sel]->win);
-	}
+	kill(clients[sel]->pid, SIGTERM);
 }
 
 void
