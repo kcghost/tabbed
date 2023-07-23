@@ -129,7 +129,7 @@ static char *getatom(int a);
 static int getclient(Window w);
 static XftColor getcolor(const char *colstr);
 static int getfirsttab(void);
-static Bool gettextprop(Window w, Atom atom, char *text, unsigned int size);
+static int gettextprop(Window w, Atom atom, char *text, unsigned int size);
 static void initfont(const char *fontstr);
 static Bool isprotodel(int c);
 static void keypress(const XEvent *e);
@@ -726,32 +726,27 @@ getfirsttab(void)
 	       ret;
 }
 
-Bool
+int
 gettextprop(Window w, Atom atom, char *text, unsigned int size)
 {
-	char **list = NULL;
-	int n;
-	XTextProperty name;
+    char **list = NULL;
+    int n;
+    XTextProperty name;
 
-	if (!text || size == 0)
-		return False;
-
-	text[0] = '\0';
-	XGetTextProperty(dpy, w, &name, atom);
-	if (!name.nitems)
-		return False;
-
-	if (name.encoding == XA_STRING) {
-		strncpy(text, (char *)name.value, size - 1);
-	} else if (XmbTextPropertyToTextList(dpy, &name, &list, &n) >= Success
-	           && n > 0 && *list) {
-		strncpy(text, *list, size - 1);
-		XFreeStringList(list);
-	}
-	text[size - 1] = '\0';
-	XFree(name.value);
-
-	return True;
+    if (!text || size == 0)
+        return 0;
+    text[0] = '\0';
+    if (!XGetTextProperty(dpy, w, &name, atom) || !name.nitems)
+        return 0;
+    if (name.encoding == XA_STRING) {
+        strncpy(text, (char *)name.value, size - 1);
+    } else if (XmbTextPropertyToTextList(dpy, &name, &list, &n) >= Success && n > 0 && *list) {
+        strncpy(text, *list, size - 1);
+        XFreeStringList(list);
+    }
+    text[size - 1] = '\0';
+    XFree(name.value);
+    return 1;
 }
 
 void
