@@ -1381,10 +1381,7 @@ updatenumlockmask(void)
 void
 updatetitle(int c)
 {
-	if (!gettextprop(clients[c]->win, wmatom[WMName], clients[c]->name,
-	    sizeof(clients[c]->name)))
-		gettextprop(clients[c]->win, XA_WM_NAME, clients[c]->name,
-		            sizeof(clients[c]->name));
+	gettextprop(clients[c]->win, XA_WM_NAME, clients[c]->name,sizeof(clients[c]->name));
 	if (sel == c)
 		xsettitle(win, clients[c]->name);
 	drawbar();
