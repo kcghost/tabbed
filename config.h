@@ -70,6 +70,8 @@ static const Key keys[] = {
 	{ ALT,       XK_Left,   rotate,      { .i = -1 } },
 	{ ALT|SHIFT, XK_Right,  movetab,     { .i = +1 } },
 	{ ALT|SHIFT, XK_Left,   movetab,     { .i = -1 } },
+
+	{ ALT,       XK_q,      killclient,  { 0 } },
 	
 /*
 	{ MODKEY,               XK_grave,  spawn,       SETPROP("_TABBED_SELECT_TAB") },
